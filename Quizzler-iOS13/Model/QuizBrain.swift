@@ -1,21 +1,15 @@
 //
-//  ViewController.swift
+//  QuizBrain.swift
 //  Quizzler-iOS13
 //
-//  Created by Angela Yu on 12/07/2019.
-//  Copyright © 2019 The App Brewery. All rights reserved.
+//  Created by Alexander Escamilla on 4/18/20.
+//  Copyright © 2020 The App Brewery. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-class ViewController: UIViewController {
-    
-    @IBOutlet weak var questionLabel: UILabel!
-    @IBOutlet weak var progressBar: UIProgressView!
-    @IBOutlet weak var trueButton: UIButton!
-    @IBOutlet weak var falseButton: UIButton!
-    
-    
+
+struct QuizBrain {
     let quiz = [
         Question(q: "Is the Earth flat?", a: "True"),
         Question(q: "Is Andromeda after Pegasus?", a: "False"),
@@ -33,35 +27,43 @@ class ViewController: UIViewController {
         Question(q: "Chocolate affects a dog's heart and nervous system; a few ounces are enough to kill a small dog.", a: "True")
     ]
     var questionIndex = 0
+    var score = 0
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        refreshQuestion()
+    mutating func  checkAnswer(_ userAnswer: String ) -> Bool {
+        let realAnswer = quiz[questionIndex].answer
+        if(realAnswer == userAnswer) {
+            score += 1
+            return true
+        } else {
+            return false
+        }
+        
     }
 
-    @IBAction func answerButtonPressed(_ sender: UIButton) {
-        let userAnswer = sender.currentTitle!
-        let realAnswer = quiz[questionIndex].answer
-        if userAnswer == realAnswer {
-            sender.backgroundColor = UIColor.green
-        } else {
-            sender.backgroundColor = UIColor.red
-        }
+    
+    
+    func getQuestionText() -> String {
+        return quiz[questionIndex].text
+    }
+    
+    func getQuestionProgress() ->  Float {
+        return Float(questionIndex + 1) / Float(quiz.count)
+        
+    }
+    
+    
+    mutating func nextQuestion() {
         if questionIndex + 1 < quiz.count {
             questionIndex += 1
         } else {
             questionIndex = 0
+            score = 0
         }
-        
-        Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(refreshQuestion), userInfo: nil, repeats: false)
     }
     
-    @objc func refreshQuestion(){
-        questionLabel.text = quiz[questionIndex].text
-        trueButton.backgroundColor   = UIColor.clear
-        falseButton.backgroundColor = UIColor.clear
+
+    
+    func getScore() -> Int{
+        return score
     }
-
 }
-
